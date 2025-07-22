@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from './Navbar.module.scss';
 
 const Navbar = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -27,10 +27,6 @@ const Navbar = () => {
           {user && (
             <Link to="/complaint" className={styles.navLink}>Complaint</Link>
           )}
-          
-          {isAdmin() && (
-            <Link to="/admin" className={styles.navLink}>Admin</Link>
-          )}
         </div>
         
         <div className={styles.authSection}>
@@ -45,6 +41,7 @@ const Navbar = () => {
             <div className={styles.authButtons}>
               <Link to="/login" className={styles.loginBtn}>Login</Link>
               <Link to="/signup" className={styles.signupBtn}>Sign Up</Link>
+              <Link to="/admin/secret" className={styles.signupBtn}>Admin Login</Link>
             </div>
           )}
         </div>
@@ -53,4 +50,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

@@ -10,6 +10,10 @@ import ComplaintForm from './pages/Complaint/ComplaintForm'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import './App.css'
+import AdminSecret from './pages/Auth/AdminSecret'
+import AdminRegister from './pages/Auth/AdminRegister'
+import AdminDeptDashboard from './pages/Admin/AdminDeptDashboard'
+import AdminLogin from './pages/Auth/AdminLogin'
 
 function App() {
   return (
@@ -38,7 +42,12 @@ function App() {
               </ProtectedRoute>
             } 
           />
+           <Route path="/admin/secret" element={<AdminSecret />} />
+           <Route path="/admin/register" element={<AdminRegister/>}></Route>
+           <Route path="/admin/login" element={<AdminLogin />} />
+           <Route path="/admin/:dept" element={<ProtectedRoute adminOnly><AdminDeptDashboard /></ProtectedRoute>} />
         </Routes>
+       
       </div>
     </AuthProvider>
   )
