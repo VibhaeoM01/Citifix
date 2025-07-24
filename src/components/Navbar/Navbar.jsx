@@ -15,8 +15,8 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
-          <span className={styles.logoIcon}>🏙️</span>
-          <span className={styles.logoText}>Smart City</span>
+          <span className={styles.logoIcon}><img style={{height:"90px", width:"100px", display:"flex", alignItems:"center"}} src="/public/citifix.png" alt="" /></span>
+          {/* <span className={styles.logoText}>Smart City</span> */}
         </Link>
         
         <div className={styles.navLinks}>

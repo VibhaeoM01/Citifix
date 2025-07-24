@@ -13,10 +13,7 @@ const AdminDeptDashboard = () => {
       setLoading(true);
       setError('');
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`/api/complaints/department/${dept}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await axios.get(`/api/complaints/department/${dept}`);
         setComplaints(res.data.complaints || []);
       } catch (err) {
         setError('Failed to fetch complaints');

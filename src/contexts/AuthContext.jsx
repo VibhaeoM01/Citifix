@@ -14,15 +14,16 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
 
   useEffect(() => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
         const currentTime = Date.now() / 1000;
-        
         if (decoded.exp > currentTime) {
           setUser(decoded);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -32,25 +33,60 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         logout();
       }
+    } else {
+      setUser(null);
+    }
+    // Admin token check
+    if (adminToken) {
+      try {
+        const decoded = jwtDecode(adminToken);
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp > currentTime) {
+          setAdmin(decoded);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${adminToken}`;
+        } else {
+          logoutAdmin();
+        }
+      } catch (error) {
+        logoutAdmin();
+      }
+    } else {
+      setAdmin(null);
     }
     setLoading(false);
-  }, [token]);
+  }, [token, adminToken]);
 
   const login = async (email, password) => {
     try {
       const response = await axios.post('/api/auth/login', { email, password });
       const { token: newToken, user: userData } = response.data;
-      
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
         error: error.response?.data?.message || 'Login failed' 
+      };
+    }
+  };
+
+  // Admin login
+  const adminLogin = async (email, password) => {
+    try {
+      const response = await axios.post('/api/auth/admin-login', { email, password });
+      const { token: newToken, admin: adminData } = response.data;
+      setAdminToken(newToken);
+      setAdmin(adminData);
+      localStorage.setItem('adminToken', newToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      return { success: true, admin: adminData };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Admin login failed'
       };
     }
   };
@@ -78,6 +114,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -85,16 +122,34 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  const logoutAdmin = () => {
+    setAdmin(null);
+    setAdminToken(null);
+    localStorage.removeItem('adminToken');
+    delete axios.defaults.headers.common['Authorization'];
+  };
+
+
   const isAdmin = () => {
-    return user?.role === 'admin';
+    return !!admin;
+  };
+
+  const isAdminAuthenticated = () => {
+    return !!adminToken && !!admin;
   };
 
   const value = {
     user,
+    admin,
+    token,
+    adminToken,
     login,
+    adminLogin,
     signup,
     logout,
+    logoutAdmin,
     isAdmin,
+    isAdminAuthenticated,
     loading
   };
 

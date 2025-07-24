@@ -21,7 +21,7 @@ const AdminSecret = () => {
       if (response.ok && data.valid) {
         // If new user, go to dept info page, else to admin dashboard
         if (data.isNewUser) {
-          navigate('/admin/register', { state: { secret } });
+          navigate('/admin/login', { state: { secret } });
         } else {
           navigate(`/admin/${data.department}`);
         }

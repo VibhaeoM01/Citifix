@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styles from './AdminRegister.module.scss';
 
 const departments = [
@@ -23,7 +24,14 @@ const AdminRegister = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const secret = location.state?.secret || '';
+  const secret = location.state?.secret || ''; // Retrieve secret from location state
+
+  useEffect(() => {
+    // If no secret in location.state, redirect to /admin/secret
+    if (!secret) {
+      navigate('/admin/secret');
+    }
+  }, [secret, navigate]);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,20 +43,15 @@ const AdminRegister = () => {
     setSuccess('');
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, secret })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setSuccess('Registration successful! Redirecting...');
-        setTimeout(() => navigate(`/admin/${form.department}`), 1500);
+      const response = await axios.post('/api/auth/admin-register', { ...form, secret });
+      if (response.status === 201) {
+        setSuccess('Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/admin/login', { state: { secret } }), 1000);
       } else {
-        setError(data.message || 'Registration failed');
+        setError(response.data.message || 'Registration failed');
       }
-    } catch {
-      setError('Server error. Please try again.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Server error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -105,7 +108,7 @@ const AdminRegister = () => {
           type="button"
           className="btn btn-link"
           style={{ color: '#667eea', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-          onClick={() => navigate('/admin/login')}
+          onClick={() => navigate('/admin/login', { state: { secret } })}
         >
           Go to Admin Login
         </button>
