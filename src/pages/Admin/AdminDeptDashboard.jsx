@@ -16,6 +16,7 @@ const AdminDeptDashboard = () => {
         const res = await axios.get(`/api/complaints/department/${dept}`);
         setComplaints(res.data.complaints || []);
       } catch (err) {
+        console.log(err);
         setError('Failed to fetch complaints');
       } finally {
         setLoading(false);
