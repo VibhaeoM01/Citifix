@@ -15,42 +15,52 @@ import AdminRegister from './pages/Auth/AdminRegister'
 import AdminDeptDashboard from './pages/Admin/AdminDeptDashboard'
 import AdminLogin from './pages/Auth/AdminLogin'
 
+
+
+function AppRoutes() {
+  // Use useAuth here if needed for route guards
+  // const { user, admin } = useAuth();
+  // const isLoggedIn = !!user || !!admin;
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/admin/secret" element={<AdminSecret />} />
+        <Route path="/admin/register" element={<AdminRegister />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route 
+          path="/complaint" 
+          element={
+            <ProtectedRoute>
+              <ComplaintForm />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/admin/:dept" element={<ProtectedRoute adminOnly><AdminDeptDashboard /></ProtectedRoute>} />
+      </Routes>
+    </>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route 
-            path="/complaint" 
-            element={
-              <ProtectedRoute>
-                <ComplaintForm />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-           <Route path="/admin/secret" element={<AdminSecret />} />
-           <Route path="/admin/register" element={<AdminRegister/>}></Route>
-           <Route path="/admin/login" element={<AdminLogin />} />
-           <Route path="/admin/:dept" element={<ProtectedRoute adminOnly><AdminDeptDashboard /></ProtectedRoute>} />
-        </Routes>
-       
-      </div>
+      <AppRoutes />
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

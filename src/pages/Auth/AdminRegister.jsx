@@ -51,6 +51,7 @@ const AdminRegister = () => {
         setError(response.data.message || 'Registration failed');
       }
     } catch (err) {
+      console.error('Admin registration error:', err, err.response?.data);
       setError(err.response?.data?.message || 'Server error. Please try again.');
     } finally {
       setLoading(false);

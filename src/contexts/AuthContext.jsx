@@ -30,7 +30,8 @@ export const AuthProvider = ({ children }) => {
         } else {
           logout();
         }
-      } catch (error) {
+      } catch (err) {
+        console.log(err);
         logout();
       }
     } else {
@@ -99,17 +100,27 @@ export const AuthProvider = ({ children }) => {
         name 
       });
       const { token: newToken, user: userData } = response.data;
-      
+      if (!newToken || !userData) {
+        return {
+          success: false,
+          error: 'Signup failed: Invalid server response.'
+        };
+      }
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      
       return { success: true };
     } catch (error) {
+      let errorMsg = 'Signup failed';
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Signup failed' 
+        error: errorMsg
       };
     }
   };
