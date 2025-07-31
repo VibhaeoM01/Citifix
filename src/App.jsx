@@ -9,6 +9,8 @@ import Signup from './pages/Auth/Signup'
 import ComplaintForm from './pages/Complaint/ComplaintForm'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import CivicIssuePage from './pages/CivicIssuePage'
+import LoginSelection from './pages/LoginSelection';
 import './App.css'
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
+          <Route path="/report" element={<CivicIssuePage />} />
+          <Route path="/select-login" element={<LoginSelection />} />
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
